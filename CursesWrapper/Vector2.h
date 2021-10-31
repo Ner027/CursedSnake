@@ -1,6 +1,6 @@
 #ifndef SNAKE_VECTOR2_H
 #define SNAKE_VECTOR2_H
-
+#include <cmath>
 
 ///Vector 2 is a class that allows to represent 2D coordinates and do operations between them
 class Vector2
@@ -13,7 +13,7 @@ public:
     //nodiscard can only be used with a compiler that supports C++17 and superior
     [[nodiscard]] int getX() const;
     [[nodiscard]] int getY() const;
-
+    [[nodiscard]] double distanceTo(const Vector2&) const;
     //Operator overloading to make working with this easier
     Vector2& operator+=(const Vector2& vec);
     Vector2& operator-=(const Vector2& vec);

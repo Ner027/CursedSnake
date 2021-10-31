@@ -43,22 +43,22 @@ void Player::tick()
     {
         case 0x0:
             if ((head.getY() - 1) < 0)
-                head.translate(0,LINES - 1);
+                head.translate(0,GW_Y - 1);
             else head.translate(0,-1);
             break;
         case 0x1:
-            if ((head.getX() + 2) >= COLS)
-                head.translate(-COLS + 2,0);
+            if ((head.getX() + 2) >= GW_X)
+                head.translate(-GW_X + 2,0);
             else head.translate(2,0);
             break;
         case 0x2:
-            if ((head.getY() + 1) >= LINES)
-                head.translate(0,-LINES + 1);
+            if ((head.getY() + 1) >= GW_Y)
+                head.translate(0,-GW_Y + 1);
             else head.translate(0,1);
             break;
         case 0x3:
             if ((head.getX() - 1) <= 0)
-                head.translate(COLS - 2,0);
+                head.translate(GW_X - 2,0);
             else head.translate(-2,0);
             break;
     }
@@ -86,4 +86,14 @@ void Player::addNode()
     Rect newNode = Rect(2,1,0,0,SNAKE_PAIR);
     newNode.moveTo(oldPos);
     body.push_back(newNode);
+}
+
+bool Player::canSpawnObject(Vector2& pos)
+{
+    if (hasHit(head.getPos(),pos)) return false;
+
+    for(Rect& node : body)
+        if (hasHit(pos,node.getPos())) return false;
+
+    return true;
 }

@@ -19,6 +19,7 @@ public:
     void setDirection(unsigned char newSide);
     void tick();
     void addNode();
+    bool canSpawnObject(Vector2& pos);
 };
 
 #endif

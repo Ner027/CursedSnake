@@ -47,6 +47,13 @@ Vector2 operator+(const Vector2 &a, const Vector2 &b)
     return newVec;
 }
 
+double Vector2::distanceTo(const Vector2& vec) const
+{
+    int sqX = (int) pow((this->x - vec.x),2);
+    int sqY = (int) pow((this->y - vec.y),2);
+    return sqrt(sqX + sqY);
+}
+
 
 
 
