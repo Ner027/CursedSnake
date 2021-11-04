@@ -4,7 +4,7 @@
 #include <vector>
 #include <cstdlib>
 #include "CursesWrapper/Rect.h"
-#include "CursesWrapper/Util.h"
+#include "Consts.h"
 
 class Player
 {
@@ -15,11 +15,12 @@ private:
     Vector2 oldPos;
 public:
     Vector2 getHeadPosition();
-    Player(int x,int y);
+    explicit Player(Vector2 pos);
     void setDirection(unsigned char newSide);
-    void tick();
+    bool tick();
     void addNode();
     bool canSpawnObject(Vector2& pos);
+    void kill();
 };
 
 #endif

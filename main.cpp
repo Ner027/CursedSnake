@@ -1,37 +1,23 @@
 #include <ncurses.h>
-#include <unistd.h>
 #include "CursesWrapper/Rect.h"
-#include "Player.h"
-#include "CursesWrapper/Util.h"
+#include "GameManager.h"
+#include "Utils.h"
+#include "pthread.h"
+using namespace std;
 
-Rect food = Rect(2,1,0,0,FOOD_PAIR);
-int score = 0;
 
-void spawnFood(Player& player)
+void* foo(void*)
 {
-    Vector2 newPos = getRandomVector2(0,0,GW_X - 2,GW_Y);
-
-    if (!player.canSpawnObject(newPos))
-        spawnFood(player);
-
-    food.moveTo(newPos);
-
-}
-
-void updateScore(int amount)
-{
-    if (amount < 0) return;
-    score += amount;
-    attron(COLOR_PAIR(UI_PAIR));
-    attron(A_BOLD);
-    mvprintw(LINES - 2,5,"Score:%d",score);
-    attroff(A_BOLD);
-    attroff(COLOR_PAIR(UI_PAIR));
-    refresh();
+    for (int i = 32; i < 255; ++i)
+    {
+        printw("%c ",i);
+    }
 }
 
 int main()
 {
+    srand(time(nullptr)); // NOLINT(cert-msc51-cpp)
+
     initscr();
     start_color();
 
@@ -45,56 +31,24 @@ int main()
     //Init the remaining pairs
     init_pair(SNAKE_PAIR,COLOR_RED,COLOR_RED);
     init_pair(FOOD_PAIR,COLOR_WHITE,COLOR_WHITE);
+    init_pair(BIG_FOOD_PAIR,COLOR_WHITE,COLOR_GREEN);
     init_pair(UI_PAIR,COLOR_WHITE,COLOR_BLACK);
+    init_pair(BLUE_PAIR,COLOR_BLUE,COLOR_BLUE);
+    init_pair(YELLOW_PAIR,COLOR_YELLOW,COLOR_YELLOW);
     bkgd(COLOR_PAIR(CLEAR_PAIR));//Set that as the background
     curs_set(0); //Disable the cursor
     clear();//Clear the terminal
-
-    attron(COLOR_PAIR(FOOD_PAIR));
-    for (int i = 0; i < GW_X; ++i)
-    {
-        move(GW_Y,i);
-        printw(" ");
-    }
     refresh();//Push the changes from the buffer to the terminal
-    updateScore(0);
-    Player player(COLS/2,LINES/2);
 
-    spawnFood(player);
+    refresh();
 
-    while (true)
-    {
-        int ch = getch();
-        switch (ch)
-        {
-            case KEY_LEFT:
-                player.setDirection(0x3);
-                break;
-            case KEY_RIGHT:
-                player.setDirection(0x1);
-                break;
-            case KEY_UP:
-                player.setDirection(0x0);
-                break;
-            case KEY_DOWN:
-                player.setDirection(0x2);
-                break;
-            case KEY_EXIT:
-                return 0;
-            default:
-                break;
-        }
+     GameManager gameManager{};
+     gameManager.start();
 
-        if (hasHit(player.getHeadPosition(),food.getPos()))
-        {
-            spawnFood(player);
-            player.addNode();
-            updateScore(SCORE_SF);
-        }
-
-        player.tick();
-        usleep(120000);
-    }
+  /*
+    pthread_t thread;
+    pthread_create(&thread,nullptr,foo, nullptr);
+*/
 }
 
 

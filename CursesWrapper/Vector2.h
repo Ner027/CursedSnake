@@ -17,6 +17,7 @@ public:
     //Operator overloading to make working with this easier
     Vector2& operator+=(const Vector2& vec);
     Vector2& operator-=(const Vector2& vec);
+
     friend bool operator ==(const Vector2& a,const Vector2& b);
     friend Vector2 operator -(const Vector2& a,const Vector2& b);
     friend Vector2 operator +(const Vector2& a,const Vector2& b);

@@ -1,13 +1,10 @@
+#include <unistd.h>
 #include "Player.h"
+#include "CursesWrapper/Util.h"
 
 Vector2 Player::getHeadPosition()
 {
     return head.getPos();
-}
-
-Player::Player(int x, int y)
-{
-    head.translate(x,y);
 }
 
 /// Player::setDirection allows to change the snake direction
@@ -27,7 +24,7 @@ void Player::setDirection(const unsigned char newSide)
 
 ///
 /// \param shouldAdd
-void Player::tick()
+bool Player::tick()
 {
     oldPos = head.getPos();
 
@@ -48,7 +45,7 @@ void Player::tick()
             break;
         case 0x1:
             if ((head.getX() + 2) >= GW_X)
-                head.translate(-GW_X + 2,0);
+                head.moveTo(0,head.getY());
             else head.translate(2,0);
             break;
         case 0x2:
@@ -58,7 +55,7 @@ void Player::tick()
             break;
         case 0x3:
             if ((head.getX() - 1) <= 0)
-                head.translate(GW_X - 2,0);
+                head.moveTo(GW_X - 2,head.getY());
             else head.translate(-2,0);
             break;
     }
@@ -68,8 +65,7 @@ void Player::tick()
     {
         //Check if the head collides with any block of the body, if so you loose the game
         if (hasHit(node.getPos(),head.getPos()))
-            exit(1);
-
+            return false;
         //Store the current block position
         Vector2 temp = node.getPos();
         //Move it to the last block position
@@ -78,6 +74,7 @@ void Player::tick()
         oldPos = temp;
     }
 
+    return true;
 }
 
 ///Player::addNode adds a block to the back of the snake
@@ -88,6 +85,7 @@ void Player::addNode()
     body.push_back(newNode);
 }
 
+//TODO:USE THIS THING IN FOOD SPAWN
 bool Player::canSpawnObject(Vector2& pos)
 {
     if (hasHit(head.getPos(),pos)) return false;
@@ -96,4 +94,22 @@ bool Player::canSpawnObject(Vector2& pos)
         if (hasHit(pos,node.getPos())) return false;
 
     return true;
+}
+
+Player::Player(Vector2 pos)
+{
+    this->head.translate(pos);
+}
+
+void Player::kill()
+{
+    for (size_t i = body.size() - 1;i > 0; --i)
+    {
+        body[i].clear();
+        usleep(K_DELAY);
+    }
+    body.clear();
+    headDir = 0x0;
+    Vector2 pos = getRandomVector2(0,0,GW_X - 2,GW_Y-1);
+    head.moveTo(pos);
 }

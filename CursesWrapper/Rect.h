@@ -2,6 +2,8 @@
 #define SNAKE_RECT_H
 #include "Vector2.h"
 #include <ncurses.h>
+#include "Util.h"
+#include "../Consts.h"
 
 /*
  * This class allows to create a rectangular object in the terminal
@@ -26,9 +28,10 @@ public:
     void translate(Vector2&);
     void translate(int,int);
     void clear();
-    Vector2 getPos();
+    [[nodiscard]]Vector2 getPos() const;
     int getX();
     int getY();
+    [[nodiscard]] Vector2 getSize() const;
     void moveTo(Vector2&);
     void moveTo(int,int);
 };

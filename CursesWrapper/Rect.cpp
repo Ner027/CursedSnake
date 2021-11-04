@@ -1,5 +1,4 @@
 #include "Rect.h"
-#include "Util.h"
 
 Rect::Rect(Vector2& size, Vector2& pos,short colorPair)
 {
@@ -50,7 +49,6 @@ void Rect::translate(Vector2& dislocation)
 void Rect::translate(int x, int y)
 {
     Vector2 newPos(x,y);
-    this->clear();
     this->translate(newPos);
 }
 
@@ -63,7 +61,7 @@ void Rect::clear()
     iterateRect(CLEAR_PAIR);
 }
 
-Vector2 Rect::getPos()
+Vector2 Rect::getPos() const
 {
     return pos;
 }
@@ -109,5 +107,10 @@ void Rect::iterateRect(const short colorPair)
     }
     attroff(COLOR_PAIR(colorPair));
     refresh();
+}
+
+Vector2 Rect::getSize() const
+{
+    return this->size;
 }
 

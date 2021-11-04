@@ -1,4 +1,6 @@
+#include <unistd.h>
 #include "Util.h"
+#include "../Utils.h"
 
 using namespace std;
 
@@ -9,7 +11,6 @@ using namespace std;
 /// \return Returns an integer between floor and ceiling
 int getRandomInt(int floor,int ceiling)
 {
-    srand(time(nullptr));
     return (floor + ( rand() % ( ceiling - floor + 1 )));
 }
 
@@ -36,3 +37,31 @@ bool hasHit(Vector2 pPos,Vector2 fPos)
     return (res.getY() == 0 && (absX == 0 || absX == 1));
 }
 
+void loadPixelMap(const string& path,Vector2& pos)
+{
+    ifstream file(path);
+    string text;
+    getline(file,text);
+    vector<string> sizes = string_split(text,' ');
+
+    int sizeX = stoi(sizes[0]) / 2;
+    int sizeY = stoi(sizes[1]) / 2;
+
+    Vector2 offSet(-sizeX,-sizeY);
+    offSet += pos;
+
+
+    while (getline(file,text))
+    {
+        vector<string> vec = string_split(text,' ');
+        int x = stoi(vec[0]) + offSet.getX();
+        int y = stoi(vec[1]) + offSet.getY();
+        int pair = stoi(vec[2]);
+        attron(COLOR_PAIR(pair));
+        mvaddch(y,x,' ');
+        mvaddch(y,x+1,' ');
+        attroff(COLOR_PAIR(pair));
+    }
+    file.close();
+    refresh();
+}
